@@ -181,3 +181,6 @@ class SpendingAlert(models.Model):
     
     def __str__(self):
         return f"{self.alert_type} - {self.created_at.strftime('%Y-%m-%d')}"
+
+    class Meta:
+        ordering = ['-created_at']

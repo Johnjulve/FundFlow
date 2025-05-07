@@ -11,10 +11,8 @@ project_path = Path(__file__).resolve().parent
 sys.path.append(str(project_path))
 
 # Set up Django settings
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'e_finance.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FundFlow.settings')
 django.setup()
-
-
 
 def create_superuser():
     if not User.objects.filter(username='admin').exists():
@@ -23,4 +21,5 @@ def create_superuser():
     else:
         print("Superuser already exists.")
 
-create_superuser()
+if __name__ == '__main__':
+    create_superuser()
