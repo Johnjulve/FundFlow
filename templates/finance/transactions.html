@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ title }}</h2>
+        <a href="{% url 'new-transaction' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Transaction
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Type</label>
+                    <select name="type" class="form-select">
+                        <option value="">All</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Date From</label>
+                    <input type="date" name="date_from" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Date To</label>
+                    <input type="date" name="date_to" class="form-control">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-filter me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transactions List -->
+    {% if transactions %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th class="text-end">Amount</th>
+                        <th>Goal Impact</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.date|date:"M d, Y" }}</td>
+                            <td>
+                                {{ transaction.description }}
+                                {% if transaction.notes %}
+                                    <i class="fas fa-sticky-note text-muted ms-2" data-bs-toggle="tooltip" title="{{ transaction.notes }}"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if transaction.category %}
+                                    <span class="badge bg-secondary">{{ transaction.category.name }}</span>
+                                    {% if transaction.category.has_active_goal %}
+                                        <i class="fas fa-bullseye text-primary ms-1" data-bs-toggle="tooltip" 
+                                           title="Contributing to {{ transaction.category.linked_goal.title }}"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge {% if transaction.transaction_type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ transaction.transaction_type|title }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <span class="{% if transaction.transaction_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                    Php {{ transaction.amount|floatformat:2|intcomma }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if transaction.category.has_active_goal %}
+                                    {% with goal_type=transaction.category.get_goal_type %}
+                                        {% if transaction.transaction_type == 'income' and goal_type == 'savings' %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-piggy-bank me-1"></i>Savings Goal
+                                            </span>
+                                        {% elif transaction.transaction_type == 'expense' and goal_type == 'expense_reduction' %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-chart-line me-1"></i>Expense Goal
+                                            </span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="{% url 'edit-transaction' transaction.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete-transaction' transaction.pk %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="table-light">
+                        <td colspan="4"><strong>Total Income:</strong></td>
+                        <td class="text-end text-success">Php {{ total_income|default:0|floatformat:2|intcomma }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="4"><strong>Total Expenses:</strong></td>
+                        <td class="text-end text-danger">Php {{ total_expenses|default:0|floatformat:2|intcomma }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="4"><strong>Net Balance:</strong></td>
+                        <td class="text-end {% if net_balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            Php {{ net_balance|default:0|floatformat:2|intcomma }}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>No transactions found. 
+            <a href="{% url 'new-transaction' %}" class="alert-link">Create your first transaction</a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Set filter values from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        for (const [key, value] of urlParams) {
+            const element = document.querySelector(`[name="${key}"]`);
+            if (element) {
+                element.value = value;
+            }
+        }
+    });
+</script>
+{% endblock %}

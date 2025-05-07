@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-5">Register</h2>
+                <form method="POST" class="px-3">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-md-end">
+                                    {% if field.label == 'Password confirmation' %}
+                                        <label class="form-label mb-0" for="{{ field.id_for_label }}">Confirmation:</label>
+                                    {% else %}
+                                        <label class="form-label mb-0">{{ field.label }}:</label>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        {% for error in field.errors %}
+                                            <small class="text-danger d-block">{{ error }}</small>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                </form>
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        Already have an account? <a href="{% url 'login' %}">Login</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

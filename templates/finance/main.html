@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}FUNDFLOW{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+        padding: 60px 0;
+        color: white;
+        border-radius: 15px 200px 20px 50px;
+    }
+    
+    @media (min-width: 768px) {
+        .hero-section {
+            padding: 100px 0;
+            border-radius: 15px 400px 20px 100px;
+        }
+    }
+    
+    .hero-content {
+        padding: 20px;
+        text-align: center;
+    }
+    
+    @media (min-width: 992px) {
+        .hero-content {
+            text-align: left;
+            padding: 0;
+        }
+    }
+    
+    .hero-section h1 {
+        font-size: calc(1.8rem + 1.5vw);
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-section .lead {
+        font-size: calc(1rem + 0.5vw);
+    }
+    
+    .feature-card {
+        transition: transform 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        background:rgb(184, 207, 230);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #000DFF;
+    }
+    
+    .cta-section {
+        background-color: #f8f9fa;
+        padding: 80px 0;
+    }
+    
+    .stat-card {
+        transition: transform 0.3s ease;
+        padding: 20px;
+        text-align: center;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .testimonial-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin: 20px 0;
+    }
+    
+    .footer-section {
+        background: #2c3e50;
+        color: white;
+        padding: 60px 0 30px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section shadow-lg">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="fw-bold mb-4">Take Control of Your Financial Future</h1>
+                    <p class="lead mb-4">Track expenses, manage budgets, and achieve your financial goals with our comprehensive financial management system.</p>
+                    {% if not user.is_authenticated %}
+                        <div class="d-grid gap-3 d-md-flex justify-content-center justify-content-lg-start">
+                            <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4">Get Started Free</a>
+                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">Sign In</a>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-lg-start">
+                            <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4">Go to Dashboard</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose FundFlow?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 feature-card shadow-lg">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3>Expense Tracking</h3>
+                        <p class="text-muted">Monitor your spending patterns and categorize expenses for better financial awareness.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 feature-card shadow-lg">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-piggy-bank feature-icon"></i>
+                        <h3>Budget Planning</h3>
+                        <p class="text-muted">Set and track budgets for different categories to help you save more effectively.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 feature-card shadow-lg">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-mobile-alt feature-icon"></i>
+                        <h3>Financial Notes</h3>
+                        <p class="text-muted">Keep track of important financial information and reminders in one secure place.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stat-card shadow-lg">
+                    <h2 class="display-4 fw-bold text-primary">10K+</h2>
+                    <p class="text-muted mb-0">Active Users</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card shadow-lg">
+                    <h2 class="display-4 fw-bold text-primary">Php {{ "100000"|intcomma }}+</h2>
+                    <p class="text-muted mb-0">Expenses Tracked</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card shadow-lg">
+                    <h2 class="display-4 fw-bold text-primary">98%</h2>
+                    <p class="text-muted mb-0">User Satisfaction</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Start Managing Your Finances?</h2>
+        <p class="lead mb-5">Join thousands of users who are already managing their finances better with E-Finance.</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5">Create Free Account</a>
+        {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-5">Go to Dashboard</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+{% endblock %}
