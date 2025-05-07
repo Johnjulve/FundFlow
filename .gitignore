@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Static files
+staticfiles/
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# Django migrations
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Local development
+*.env.local
+*.sqlite3-journal
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Testing
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Virtual environment
+.python-version
+pyvenv.cfg
+pip-log.txt
+pip-delete-this-directory.txt
